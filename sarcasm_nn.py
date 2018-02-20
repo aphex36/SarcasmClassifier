@@ -185,7 +185,7 @@ def forward_propagation(X, parameters):
 
     # Retrieve the parameters from the dictionary "parameters"
     '''
-    Number of W/b parameters depends on hidden layer number
+    Daniel Number of W/b parameters depends on hidden layer number
     '''
     W1 = parameters['W1']
     b1 = parameters['b1']
@@ -195,7 +195,7 @@ def forward_propagation(X, parameters):
     b3 = parameters['b3']
 
     '''
-    This would also change, (for 3 hidden layers there would be up to Z4, etc)
+    Daniel, this would also change, (for 3 hidden layers there would be up to Z4, etc)
     '''
     ### START CODE HERE ### (approx. 5 lines)              # Numpy Equivalents:
     Z1 = tf.add(tf.matmul(W1, X), b1)                                            # Z1 = np.dot(W1, X) + b1
@@ -341,7 +341,7 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001,
 embeddings = initializeEmbeddings()
 
 '''
-Change the 500000 to half of the number you want to use
+Daniel, Change the 500000 to half of the number you want to use
 e.g. I wanted to try one mill, so I used 500k sarc/500k not sarc.
 '''
 sarcSentences = sarcSentences[:500000]
