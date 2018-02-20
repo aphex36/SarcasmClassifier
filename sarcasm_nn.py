@@ -148,10 +148,10 @@ def initialize_parameters():
     tf.set_random_seed(1)                   # so that your "random" numbers match ours
 
     ### START CODE HERE ### (approx. 6 lines of code)
-    ''''
+    '''
     Daniel, the way this is constructed right now is there is 2 hidden layers, so experiment
     with the unit numbers and layers (more layers = more W/b's)
-    ''''
+    '''
     W1 = tf.get_variable("W1", [25,100], initializer = tf.contrib.layers.xavier_initializer(seed = 1))
     b1 = tf.get_variable("b1", [25,1], initializer = tf.zeros_initializer())
     W2 = tf.get_variable("W2", [12,25], initializer = tf.contrib.layers.xavier_initializer(seed = 1))
