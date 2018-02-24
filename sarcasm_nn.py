@@ -6,6 +6,8 @@ import re
 import sys
 import matplotlib.pyplot as plt
 import tensorflow as tf
+import os
+import fnmatch
 from tensorflow.python.framework import ops
 from gensim.models import Word2Vec
 from nltk.corpus import brown
@@ -24,34 +26,33 @@ CSV format of this file is weird, so had to do some manual extraction to get wor
 embedding = turns word to a vector
 '''
 def initializeEmbeddings():
-    maxWordsAppeared = 0
-    indexOfMax = -1
-    counter = 1
-    with open("../SarcasmDetection/train-balanced-sarcasm.csv") as infile:
-        for line in infile:
-            if line[0] == 'l':
-                continue
-            currLabel = int(line[0])
-            dateReg = r'([12]\d{3}-(0[1-9]|1[0-2]),[12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))'
-            start = re.search(dateReg, line).start()
-            sentence = line[2:start-1]
-            for i in range(5):
-                indexOfComma = sentence.rfind(',')
-                sentence = sentence[:indexOfComma]
-            words = sentence.split()
-            for i in range(len(words)):
-                while len(words[i]) != 0 and words[i][len(words[i])-1] in punctuation:
-                    words[i] = words[i][:len(words[i])-1]
-                while len(words[i]) != 0 and words[i][0] in punctuation:
-                    words[i] = words[i][1:]
-            if currLabel == 0:
-                notSarcSentences.append(words)
-            else:
-                sarcSentences.append(words)
-            if len(words) > maxWordsAppeared:
-                maxWordsAppeared = len(words)
-                indexOfMax = counter
-            counter += 1
+    
+    for file in os.listdir("."):
+        counter = 1
+        if not fnmatch.fnmatch(file, "*train-balanced-sarcasm_*"):
+            continue
+        with open(file) as infile:
+            for line in infile:
+                if counter == 1:
+                    counter += 1
+                    continue
+                currLabel = int(line[0])
+                dateReg = r'([12]\d{3}-(0[1-9]|1[0-2]),[12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))'
+                start = re.search(dateReg, line).start()
+                sentence = line[2:start-1]
+                for i in range(5):
+                    indexOfComma = sentence.rfind(',')
+                    sentence = sentence[:indexOfComma]
+                words = sentence.split()
+                for i in range(len(words)):
+                    while len(words[i]) != 0 and words[i][len(words[i])-1] in punctuation:
+                        words[i] = words[i][:len(words[i])-1]
+                    while len(words[i]) != 0 and words[i][0] in punctuation:
+                        words[i] = words[i][1:]
+                if currLabel == 0:
+                    notSarcSentences.append(words)
+                else:
+                    sarcSentences.append(words)
 
     embeddings = Word2Vec(sarcSentences + notSarcSentences + brown.sents(), min_count=1)
     return embeddings
