@@ -27,7 +27,7 @@ def initializeEmbeddings():
     maxWordsAppeared = 0
     indexOfMax = -1
     counter = 1
-    with open("train-balanced-sarcasm.csv") as infile:
+    with open("../SarcasmDetection/train-balanced-sarcasm.csv") as infile:
         for line in infile:
             if line[0] == 'l':
                 continue
@@ -54,8 +54,6 @@ def initializeEmbeddings():
             counter += 1
 
     embeddings = Word2Vec(sarcSentences + notSarcSentences + brown.sents(), min_count=1)
-    print("Max words appeared in a sentence: " + str(maxWordsAppeared))
-    print("The example number is " + str(indexOfMax))
     return embeddings
 
 '''
@@ -335,6 +333,7 @@ Change the 500000 to half of the number you want to use
 e.g. I wanted to try one mill, so I used 500k sarc/500k not sarc.
 '''
 numExamples = int(sys.argv[1])/2
+print("For " + str(2*numExamples) + " examples")
 sarcSentences = sarcSentences[:numExamples]
 notSarcSentences = notSarcSentences[:numExamples]
 trainTestSplit = 9*(len(sarcSentences))/10
