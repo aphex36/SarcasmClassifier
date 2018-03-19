@@ -157,7 +157,7 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']
 earlystop = EarlyStopping(monitor='acc', min_delta=0.1, patience=0, \
                           verbose=0, mode='auto')
 
-model.fit(train_sequences, np.array(yTrain), callbacks=[earlystop], epochs = 5, batch_size = 32, shuffle=True)
+model.fit(train_sequences, np.array(yTrain), callbacks=[earlystop], epochs = 20, batch_size = 32, shuffle=True)
 print(model.metrics_names)
 print(model.evaluate(test_sequences, np.array(yTest)))
 predictions = np.round(np.array(model.predict(test_sequences, batch_size=32)))
