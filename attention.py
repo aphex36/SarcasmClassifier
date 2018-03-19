@@ -27,7 +27,7 @@ punctuation = ['.', ',', ';', ':', '!', '?', '\"', '\'']
 counter = 0
 trainTestSplit = 0
 
-max_features = 160552
+max_features = 69659
 embeddingsDim = 200
 n_a = 64 #This is size of bidirectional lstm
 n_s = 128#This is size of post-attention lstm
@@ -40,7 +40,7 @@ numInvalid['invalid'] = 0
 # Defined shared layers as global variables
 repeator = RepeatVector(Tx)
 concatenator = Concatenate(axis=-1)
-densor1 = Dense(10, activation = "tanh")
+densor1 = Dense(10, activation = "relu")
 densor2 = Dense(1, activation = "relu")
 activator = Activation(activation="softmax", name='attention_weights') # We are using a custom softmax(axis = 1) loaded in this notebook
 dotor = Dot(axes = 1)
@@ -72,7 +72,7 @@ def initializeEmbeddings():
                 notSarcSentences.append(words)
             else:
                 sarcSentences.append(words)
-    embeddings = Word2Vec(sarcSentences + notSarcSentences + brown.sents(), size = embeddingsDim, min_count=1)
+    embeddings = Word2Vec(sarcSentences, size = embeddingsDim, min_count=1)
 
     return embeddings.wv.syn0 #These are the weights
 
