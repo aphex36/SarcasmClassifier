@@ -69,8 +69,8 @@ def initializeEmbeddings():
                 else:
                     sarcSentences.append(words)
         infile.close()
-        embeddings = Word2Vec(sarcSentences, size = embeddingsDim, min_count=1)
-        return embeddings.wv.syn0 #These are the weights
+    embeddings = Word2Vec(sarcSentences, size = embeddingsDim, min_count=1)
+    return embeddings.wv.syn0 #These are the weights
 
 def sarcasmModel(inputShape, max_features, embeddings_dim, embedding_weights):
     # Propagate sentence_indices through your embedding layer, you get back the embeddings
@@ -125,6 +125,8 @@ for i, x in enumerate(sarcSentences):
         #print(x)
         xTest.append(x)
         yTest.append([1,0])
+
+
 for i, y in enumerate(notSarcSentences):
     if (i < trainTestSplit):
         xTrain.append(y)
@@ -135,14 +137,14 @@ for i, y in enumerate(notSarcSentences):
 del sarcSentences
 del notSarcSentences
 
-
+'''
 p =  np.random.permutation(len(xTrain))
 xTrain = np.array(xTrain)[p]
 yTrain = np.array(yTrain)[p]
 p =  np.random.permutation(len(xTest))
 xTest = np.array(xTest)[p]
 yTest = np.array(yTest)[p]
-
+'''
 
 tokenizer = Tokenizer(num_words=max_features, lower=True, split=" ")
 tokenizer.fit_on_texts(xTrain)
@@ -174,21 +176,38 @@ for i in yTest:
         actualLabels.append(1)
     else:
         actualLabels.append(0)
-
+tn = 0
+fp = 0
+fn = 0
+tp = 0
 numCorrect = 0
 for i in range(len(actualPredictions)):
     if actualPredictions[i] == actualLabels[i]:
+        if actualPredictions[i] == 0:
+            tp += 1
+        else:
+            tn += 1
         numCorrect += 1
+    else:
+        if actualPredictions[i] == 0:
+            fn += 1
+        else:
+            fp += 1
+print("tp " + str(tp))
+print("tn " + str(tn))
+print("fp " + str(fp))
+print("fn " + str(fn))
+
 print("acc: " + str((1.0*numCorrect)/(len(actualPredictions))))
-confusionMatrix = sk.metrics.confusion_matrix(actualLabels, actualPredictions)
-tn, fp, fn, tp = confusionMatrix.ravel()
+#tn, fp, fn, tp = confusionMatrix.ravel()
 precision = (1.0*tp)/(tp+fp)
 recall = (1.0*tp)/(tp+fn)
-confusionMatrix = confusionMatrix.T
+confusionMatrix = np.zeros((2,2))
 temp = confusionMatrix[0][0]
-confusionMatrix[0][0] = confusionMatrix[1][1]
-confusionMatrix[1][1] = temp
-confusionMatrix = (1.0*confusionMatrix)/confusionMatrix.sum(axis=1)[:,None]
+confusionMatrix[0][0] = recall
+confusionMatrix[0][1] = 1-recall
+confusionMatrix[1][0] = float(tn)/(tn+fp)
+confusionMatrix[1][1] = 1-confusionMatrix[1][0]
 print(confusionMatrix)
 print("precision: " + str(precision))
 print("recall: " + str(recall))
