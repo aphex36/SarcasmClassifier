@@ -69,7 +69,7 @@ def initializeEmbeddings():
                 else:
                     sarcSentences.append(words)
         infile.close()
-    embeddings = Word2Vec(sarcSentences, size = embeddingsDim, min_count=1)
+    embeddings = Word2Vec(sarcSentences + notSarcSentences, size = embeddingsDim, min_count=1)
     return embeddings.wv.syn0 #These are the weights
 
 def sarcasmModel(inputShape, max_features, embeddings_dim, embedding_weights):
@@ -156,7 +156,7 @@ test_sequences = sequence.pad_sequences( tokenizer.texts_to_sequences(xTest) , m
 print("done tokenizing")
 model = sarcasmModel(maxSentenceLength, max_features, embeddingsDim, weights)
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-earlystop = EarlyStopping(monitor='acc', min_delta=0.1, patience=0, \
+earlystop = EarlyStopping(monitor='acc', min_delta=0.05, patience=2, \
                           verbose=0, mode='auto')
 
 model.fit(train_sequences, np.array(yTrain), callbacks=[earlystop], epochs = 20, batch_size = 32, shuffle=True)
@@ -206,8 +206,8 @@ confusionMatrix = np.zeros((2,2))
 temp = confusionMatrix[0][0]
 confusionMatrix[0][0] = recall
 confusionMatrix[0][1] = 1-recall
-confusionMatrix[1][0] = float(tn)/(tn+fp)
-confusionMatrix[1][1] = 1-confusionMatrix[1][0]
+confusionMatrix[1][1] = float(tn)/(tn+fp)
+confusionMatrix[1][0] = 1-confusionMatrix[1][1]
 print(confusionMatrix)
 print("precision: " + str(precision))
 print("recall: " + str(recall))
